@@ -6,6 +6,11 @@ const petHungerDisplay = document.getElementById('petHunger');
 const petHealthDisplay = document.getElementById('petHealth');
 const petPoopsDisplay = document.getElementById('petPoop');
 
+const goodColor = '#3b822c';
+const okColor = '#74d660';
+const mehColor = '#ebe83b';
+const badColor = '#eb3b3b';
+
 let Game = {};
 
 const feedBtns = document.querySelectorAll('button.feed');
@@ -42,27 +47,28 @@ Pet.prototype.update = function(time){
 }
 
 Pet.prototype.updateHappy = function(time){
-    const dec = Math.randomBetween(maxStat/400, maxStat/200) * time/1000;
-    this.happy = Math.max(0, this.happy - dec) - (this.poops / 10);
-    petHappyDisplay.innerText = this.happy;
+    const dec = Math.randomBetween(maxStat/500, maxStat/300) * time/1000;
+    const happyAmt = Math.max(0, this.happy - dec) - (this.poops / 10);
+    this.happy = happyAmt > 100 ? 100 : happyAmt;
+    petHappyDisplay.style.width = this.happy + '%';
 }
 
 Pet.prototype.updateHunger = function(time){
     const dec = Math.randomBetween(maxStat/300, maxStat/150) * time/1000;
-    this.hunger = Math.max(0, this.hunger - dec);
-    petHungerDisplay.innerText = this.hunger;
+    this.hunger = Math.max(0, this.hunger - dec) > 100 ? 100 : Math.max(0, this.hunger - dec);
+    petHungerDisplay.style.width = this.hunger + '%';
 }
 
 Pet.prototype.updateEnergy = function(time){
     if(this.awake){
         const dec = 0.1 * time/1000;
         this.energy = Math.max(0, this.energy - dec);
-        petEnergyDisplay.innerText = this.energy;
+        petEnergyDisplay.style.width = this.energy + '%';
         
     } else {
         const inc = 0.5 * time/1000;
         this.energy += inc;
-        petEnergyDisplay.innerText = this.energy;
+        petEnergyDisplay.style.width = this.energy + '%';
         
     }
 }
