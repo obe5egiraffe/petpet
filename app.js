@@ -6,10 +6,10 @@ const petHungerDisplay = document.getElementById('petHunger');
 const petHealthDisplay = document.getElementById('petHealth');
 const petPoopsDisplay = document.getElementById('petPoop');
 
-const goodColor = '#3b822c';
-const okColor = '#74d660';
-const mehColor = '#ebe83b';
-const badColor = '#eb3b3b';
+const goodColour = '#3b822c';
+const okColour = '#74d660';
+const mehColour = '#ebe83b';
+const badColour = '#eb3b3b';
 
 let Game = {};
 
@@ -42,6 +42,7 @@ Pet.prototype.update = function(time){
         this.updatePoops(time);
         this.updateAge(time);
         this.updateStatus(time);
+        this.updateStatusColour();
     }
     
 }
@@ -139,6 +140,24 @@ Pet.prototype.cleanPoop = function() {
     if(this.poops > 0){
         this.poops--
     }
+}
+
+Pet.prototype.updateStatusColour = function() {
+    const statusBars = document.querySelectorAll('.stat');
+    statusBars.forEach(bar => {
+        const barWidth = parseFloat(bar.style.width); 
+        let barColour = goodColour;
+        if(barWidth >= 75){
+            barColour = goodColour;
+        } else if (barWidth < 75 && barWidth >= 50){
+            barColour = okColour;
+        } else if (barWidth < 50 && barWidth >= 20){
+            barColour = mehColour;
+        } else {
+            barColour = badColour;
+        }
+        bar.style.backgroundColor = barColour;
+    })
 }
  
 function initGame(){
