@@ -58,28 +58,33 @@ Pet.prototype.updateEnergy = function(time){
         const dec = 0.1 * time/1000;
         this.energy = Math.max(0, this.energy - dec);
         petEnergyDisplay.innerText = this.energy;
+        
     } else {
         const inc = 0.5 * time/1000;
         this.energy += inc;
         petEnergyDisplay.innerText = this.energy;
+        
     }
-    
 }
 
 Pet.prototype.updateStatus = function(time){
-    let statusMessage = "Awake";
+    let statusMessage = "";
     if(this.awake && this.energy < 15 && this.health > 0){
         this.awake = false;
-        statusMessage = "Sleeping";
-    } else if(!this.awake && this.energy > 100 && this.health > 0){
+    } 
+    if(!this.awake && this.energy > 80 && this.health > 0){
         this.awake = true;
-        statusMessage = "Awake";
-    } else if(this.Health === 0) {
+    } 
+    if(this.Health === 0) {
         this.awake = false;
-        statusMessage = "Dead";
         this.alive = false;
+        petStatusDisplay.innerHTML = "Dead";
     }
-    petStatusDisplay.innerHTML = statusMessage;
+    if(this.awake){
+        petStatusDisplay.innerHTML = "Awake";
+    } else {
+        petStatusDisplay.innerHTML = "Sleeping";
+    }
 }
 
 Pet.prototype.updateAge = function(time){
@@ -104,20 +109,22 @@ Pet.prototype.updatePoops = function(time){
 }
 
 Pet.prototype.feed = function(type){
-    if(type === 'meat'){
-        this.hunger += 70;
-        this.happy += 20;
-    } else if(type === 'veg'){
-        this.hunger += 40;
-    } else if(type === 'junk'){
-        this.hunger += 10;
-        this.happy += 40;
+    if(this.awake){
+        if(type === 'meat'){
+            this.hunger += 70;
+            this.happy += 20;
+        } else if(type === 'veg'){
+            this.hunger += 40;
+        } else if(type === 'junk'){
+            this.hunger += 10;
+            this.happy += 40;
+        }
+        this.digestion += 20;
     }
-    this.digestion += 20;
 }
 
 Pet.prototype.play = function(activity){
-    if(activity === 'pet'){
+    if(activity === 'pet' && this.awake){
         this.happy += 35;
     }
 }
