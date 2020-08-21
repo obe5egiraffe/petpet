@@ -1,5 +1,6 @@
 const petHappyDisplay = document.getElementById('petHappy');
 const petAgeDisplay = document.getElementById('petAge');
+const petStatusDisplay = document.getElementById('petStatus');
 const petEnergyDisplay = document.getElementById('petEnergy');
 const petHungerDisplay = document.getElementById('petHunger');
 const petHealthDisplay = document.getElementById('petHealth');
@@ -17,6 +18,7 @@ const gameTimeStep = 400;
 
 function Pet(options) {
     this.hunger = 100;
+    this.awake = true;
     this.happy = 100;
     this.health = 100;
     this.energy = 100;
@@ -24,13 +26,19 @@ function Pet(options) {
     this.game = options.game;
     this.digestion = 0;
     this.poops = 0;
+    this.alive = true;
 }
 
 Pet.prototype.update = function(time){
-    this.updateHappy(time);
-    this.updateHunger(time);
-    this.updateEnergy(time);
-    this.updatePoops(time);
+    if(this.alive){
+        this.updateHappy(time);
+        this.updateHunger(time);
+        this.updateEnergy(time);
+        this.updatePoops(time);
+        this.updateAge(time);
+        this.updateStatus(time);
+    }
+    
 }
 
 Pet.prototype.updateHappy = function(time){
@@ -46,13 +54,43 @@ Pet.prototype.updateHunger = function(time){
 }
 
 Pet.prototype.updateEnergy = function(time){
-    const dec = 0.1 * time/1000;
-    this.energy = Math.max(0, this.energy - dec);
-    petEnergyDisplay.innerText = this.energy;
+    if(this.awake){
+        const dec = 0.1 * time/1000;
+        this.energy = Math.max(0, this.energy - dec);
+        petEnergyDisplay.innerText = this.energy;
+    } else {
+        const inc = 0.5 * time/1000;
+        this.energy += inc;
+        petEnergyDisplay.innerText = this.energy;
+    }
+    
+}
+
+Pet.prototype.updateStatus = function(time){
+    let statusMessage = "Awake";
+    if(this.awake && this.energy < 15 && this.health > 0){
+        this.awake = false;
+        statusMessage = "Sleeping";
+    } else if(!this.awake && this.energy > 100 && this.health > 0){
+        this.awake = true;
+        statusMessage = "Awake";
+    } else if(this.Health === 0) {
+        this.awake = false;
+        statusMessage = "Dead";
+        this.alive = false;
+    }
+    petStatusDisplay.innerHTML = statusMessage;
 }
 
 Pet.prototype.updateAge = function(time){
-    
+    if(Game.ticks <= 3000){
+        this.age = "Baby"
+    } else if(Game.ticks > 3000 && Game.ticks < 5000){
+        this.age = "Teenager"
+    } else {
+        this.age = "Adult"
+    }
+    petAgeDisplay.innerText = this.age;
 }
 
 Pet.prototype.updatePoops = function(time){
@@ -86,7 +124,7 @@ Pet.prototype.play = function(activity){
 
 Pet.prototype.cleanPoop = function() {
     if(this.poops > 0){
-        this.poops--;
+        this.poops--
     }
 }
  
