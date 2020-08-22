@@ -42,7 +42,8 @@ Pet.prototype.update = function(time){
         this.updatePoops(time);
         this.updateAge(time);
         this.updateStatus(time);
-        this.updateStatusColour();
+        this.updateHealth();
+        
     }
     
 }
@@ -75,7 +76,6 @@ Pet.prototype.updateEnergy = function(time){
 }
 
 Pet.prototype.updateStatus = function(time){
-    let statusMessage = "";
     if(this.awake && this.energy < 15 && this.health > 0){
         this.awake = false;
     } 
@@ -92,6 +92,10 @@ Pet.prototype.updateStatus = function(time){
     } else {
         petStatusDisplay.innerHTML = "Sleeping";
     }
+}
+
+Pet.prototype.updateHealth = function(){
+    petHealthDisplay.style.width = this.health + '%';
 }
 
 Pet.prototype.updateAge = function(time){
@@ -122,9 +126,12 @@ Pet.prototype.feed = function(type){
             this.happy += 20;
         } else if(type === 'veg'){
             this.hunger += 40;
+            this.health = this.health + 5 > 100 ? 100 : this.health + 5;
+            
         } else if(type === 'junk'){
             this.hunger += 10;
             this.happy += 40;
+            this.health -= 10;
         }
         this.digestion += 20;
     }
@@ -138,11 +145,13 @@ Pet.prototype.play = function(activity){
 
 Pet.prototype.cleanPoop = function() {
     if(this.poops > 0){
-        this.poops--
+        this.poops--;
+        this.happy += 15;
     }
 }
 
-Pet.prototype.updateStatusColour = function() {
+
+function updateStatusColour() {
     const statusBars = document.querySelectorAll('.stat');
     statusBars.forEach(bar => {
         const barWidth = parseFloat(bar.style.width); 
@@ -168,13 +177,13 @@ function initGame(){
 function runGame(){    
     Game.ticks++
     Game.pet.update(gameTimeStep);
+    updateStatusColour();
     setTimeout(runGame, gameTimeStep);
 }
 
 Math.randomBetween = function(min, max) {
     return Math.random() * (max - min + 1) + min;
 };
-
 
 
 initGame();
