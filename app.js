@@ -43,7 +43,6 @@ Pet.prototype.update = function(time){
         this.updateAge(time);
         this.updateStatus(time);
         this.updateHealth();
-        
     }
     
 }
@@ -79,18 +78,20 @@ Pet.prototype.updateStatus = function(time){
     if(this.awake && this.energy < 15 && this.health > 0){
         this.awake = false;
     } 
-    if(!this.awake && this.energy > 80 && this.health > 0){
+     else if(!this.awake && this.energy > 80 && this.health > 0){
         this.awake = true;
     } 
-    if(this.Health === 0) {
+     else if(this.health === 0) {
         this.awake = false;
         this.alive = false;
-        petStatusDisplay.innerHTML = "Dead";
+        
     }
-    if(this.awake){
+    if(this.awake && this.alive){
         petStatusDisplay.innerHTML = "Awake";
-    } else {
+    } else if (!this.awake && this.alive){
         petStatusDisplay.innerHTML = "Sleeping";
+    } else if (!this.alive){
+        petStatusDisplay.innerHTML = "Dead";
     }
 }
 
@@ -131,7 +132,7 @@ Pet.prototype.feed = function(type){
         } else if(type === 'junk'){
             this.hunger += 10;
             this.happy += 40;
-            this.health -= 10;
+            this.health = this.health - 10 < 0 ? 0 : this.health - 10;
         }
         this.digestion += 20;
     }
@@ -144,9 +145,11 @@ Pet.prototype.play = function(activity){
 }
 
 Pet.prototype.cleanPoop = function() {
-    if(this.poops > 0){
-        this.poops--;
-        this.happy += 15;
+    if(this.alive){
+        if(this.poops > 0){
+            this.poops--;
+            this.happy += 15;
+        }
     }
 }
 
