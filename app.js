@@ -77,14 +77,11 @@ Pet.prototype.updateEnergy = function(time){
 Pet.prototype.updateStatus = function(time){
     if(this.awake && this.energy < 15 && this.health > 0){
         this.awake = false;
-    } 
-     else if(!this.awake && this.energy > 80 && this.health > 0){
+    } else if(!this.awake && this.energy > 80 && this.health > 0){
         this.awake = true;
-    } 
-     else if(this.health === 0) {
+    } else if(this.health === 0) {
         this.awake = false;
         this.alive = false;
-        
     }
     if(this.awake && this.alive){
         petStatusDisplay.innerHTML = "Awake";
@@ -175,6 +172,7 @@ function updateStatusColour() {
 function initGame(){
     Game.pet = new Pet({game: Game});
     Game.ticks = 0;
+    runGame();
 }
 
 function runGame(){    
@@ -190,7 +188,6 @@ Math.randomBetween = function(min, max) {
 
 
 initGame();
-runGame();
 
 feedBtns.forEach(btn => {
     btn.addEventListener('click', () => {
